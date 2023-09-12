@@ -5,3 +5,12 @@
 <h1>Hello, world!</h1>
 
 Welcome to your new app.
+
+<p>During prerendering, this page never loads because we are using dynamic routing to always render the Counter page.</p>
+<p>When the app renders interactively, our default router takes over and renders the Index page.</p>
+
+<p>We assume that if you are using dynamic routing you have a custom router. That router can on the server use the IRoutingStateProvider to get the current route data, or can pass that state through
+their own mechanism to the custom interactive router using a scoped service.
+</p>
+
+<p>The custom interactive router can then read that information during prerrendering to avoid double routing situations. The logic on this example is trivial, but the recommendation is that the logic for routing is factored out and shared between the custom interactive router and the server router.</p>
