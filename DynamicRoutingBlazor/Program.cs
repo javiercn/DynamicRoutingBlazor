@@ -1,4 +1,7 @@
-using DynamicRoutingBlazor.Components;
+using DynamicRoutingBlazor.Client.Components;
+using DynamicRoutingBlazor.DynamicRouting;
+using Microsoft.AspNetCore.Components.Endpoints;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -6,6 +9,10 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorComponents()
     .AddServerComponents()
     .AddWebAssemblyComponents();
+
+builder.Services.TryAddEnumerable(
+    ServiceDescriptor.Singleton<MatcherPolicy, DynamicRazorComponentEndpointMatcherPolicy>());
+builder.Services.AddSingleton<DynamicComponentResolver<object>, CustomResolver>();
 
 var app = builder.Build();
 
@@ -24,9 +31,10 @@ else
 app.UseHttpsRedirection();
 
 app.UseStaticFiles();
-
 app.MapRazorComponents<App>()
     .AddServerRenderMode()
     .AddWebAssemblyRenderMode();
+
+app.MapDynamicRazorComponentEndpoints<CustomResolver, object>("{**path:nonfile}", null);
 
 app.Run();
